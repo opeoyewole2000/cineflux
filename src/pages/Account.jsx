@@ -18,7 +18,7 @@ export default function Account() {
     profiles, activeProfile, selectProfile,
     addProfile, updateProfile, deleteProfile,
     traktToken, traktUser, traktSettings, setTraktSettings,
-    connectTrakt, disconnectTrakt,
+    connectTrakt, disconnectTrakt, syncTraktData,
     PROFILE_COLORS,
   } = useApp()
 
@@ -83,7 +83,7 @@ export default function Account() {
                 <Toggle checked={traktSettings.syncWatchlist} onChange={v => setTraktSettings(s => ({ ...s, syncWatchlist: v }))} />
               </div>
               <div style={{ marginTop: '0.75rem', display: 'flex', gap: 8 }}>
-                <button className="btn-ghost">↻ Sync now</button>
+                <button className="btn-ghost" onClick={() => syncTraktData(traktToken)}>↻ Sync now</button>
                 <button className="btn-ghost" onClick={disconnectTrakt} style={{ color: '#f09595' }}>Disconnect</button>
               </div>
             </>

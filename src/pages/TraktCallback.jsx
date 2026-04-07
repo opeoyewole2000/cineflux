@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { exchangeTraktCode, getTraktProfile } from '../api/trakt'
@@ -8,8 +8,12 @@ export default function TraktCallback() {
   const { connectTrakt } = useApp()
   const [status, setStatus] = useState('Connecting to Trakt...')
   const [error, setError] = useState(null)
+  const attempted = useRef(false)
 
   useEffect(() => {
+    if (attempted.current) return
+    attempted.current = true
+
     const params = new URLSearchParams(window.location.search)
     const code = params.get('code')
 
@@ -27,8 +31,8 @@ export default function TraktCallback() {
         setTimeout(() => navigate('/account'), 1200)
       })
       .catch(err => {
-        setError('Failed to connect to Trakt. Please try again.')
-        console.error(err)
+        console.error('Trakt auth error:', err)
+        setError(`Failed to connect to Trakt: ${err.message}. Please try again.`)
       })
   }, [])
 

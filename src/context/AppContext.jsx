@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { getTraktWatchlist, getTraktRatings, getTraktWatchedHistory } from '../api/trakt'
 
 const AppContext = createContext(null)
 
@@ -90,9 +91,62 @@ export function AppProvider({ children }) {
     setProgress(prev => ({ ...prev, [pid]: { ...(prev[pid] || {}), [movieId]: pct } }))
   }
 
+  async function syncTraktData(token, profileId) {
+    const id = profileId || pid
+    if (!token || !id) {
+      console.warn('[Trakt] syncTraktData called with missing token or profile id', { token: !!token, id })
+      return
+    }
+
+    try {
+      const [watchlist, ratingsData, watched] = await Promise.all([
+        getTraktWatchlist(token),
+        getTraktRatings(token),
+        getTraktWatchedHistory(token),
+      ])
+
+      // Merge watchlist (Trakt ids.tmdb → local watchlist)
+      const traktWlIds = watchlist.map(i => i.movie?.ids?.tmdb).filter(Boolean)
+      setWatchlists(prev => ({
+        ...prev,
+        [id]: [...new Set([...(prev[id] || []), ...traktWlIds])],
+      }))
+
+      // Merge ratings (Trakt 1–10 → CineFlux 1–5)
+      const newRatings = {}
+      ratingsData.forEach(i => {
+        if (i.movie?.ids?.tmdb) newRatings[i.movie.ids.tmdb] = Math.round(i.rating / 2)
+      })
+      setRatings(prev => ({
+        ...prev,
+        [id]: { ...(prev[id] || {}), ...newRatings },
+      }))
+
+      // Merge watched history (any plays → 100% progress)
+      const newProgress = {}
+      watched.forEach(i => {
+        if (i.movie?.ids?.tmdb && i.plays > 0) newProgress[i.movie.ids.tmdb] = 100
+      })
+      setProgress(prev => ({
+        ...prev,
+        [id]: { ...(prev[id] || {}), ...newProgress },
+      }))
+
+      console.log('[Trakt] Sync complete', {
+        watchlist: traktWlIds.length,
+        ratings: Object.keys(newRatings).length,
+        watched: Object.keys(newProgress).length,
+      })
+    } catch (err) {
+      console.error('[Trakt] Sync failed:', err)
+    }
+  }
+
   function connectTrakt(token, user) {
     setTraktToken(token)
     setTraktUser(user)
+    // pid may not yet reflect latest state here; pass it explicitly as fallback
+    syncTraktData(token, pid)
   }
 
   function disconnectTrakt() {
@@ -105,7 +159,7 @@ export function AppProvider({ children }) {
       profiles, activeProfile, selectProfile, addProfile, updateProfile, deleteProfile,
       myWatchlist, myRatings, myProgress,
       toggleWatchlist, rateMovie, updateProgress,
-      traktToken, traktUser, traktSettings, setTraktSettings, connectTrakt, disconnectTrakt,
+      traktToken, traktUser, traktSettings, setTraktSettings, connectTrakt, disconnectTrakt, syncTraktData,
       PROFILE_COLORS,
     }}>
       {children}
