@@ -45,8 +45,8 @@ export default function Account() {
         <div className={styles.card}>
           <h2 className={styles.cardTitle}>Account details</h2>
           <div className={styles.row}><span className={styles.label}>Name</span><span>{activeProfile?.name || 'User'}</span></div>
-          <div className={styles.row}><span className={styles.label}>Plan</span><span className={styles.planBadge}>Premium</span></div>
-          <div className={styles.row}><span className={styles.label}>Member since</span><span>2024</span></div>
+          <div className={styles.row}><span className={styles.label}>Plan</span><span className={styles.planBadge}>Free</span></div>
+          <div className={styles.row}><span className={styles.label}>Member since</span><span>2026</span></div>
         </div>
 
         {/* Trakt */}
