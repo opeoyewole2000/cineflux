@@ -1,0 +1,183 @@
+.card {
+  flex: 0 0 148px;
+  cursor: pointer;
+}
+.card:hover .thumb { transform: scale(1.03); }
+.card:hover .wlBtn { opacity: 1; }
+
+.thumb {
+  width: 148px;
+  height: 220px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 8px;
+  transition: transform 0.2s ease;
+  position: relative;
+  background: var(--surface);
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface2);
+}
+
+.badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wlBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(8, 8, 15, 0.75);
+  border: 0.5px solid rgba(255,255,255,0.2);
+  color: var(--text);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+  cursor: pointer;
+}
+.wlOn {
+  opacity: 1 !important;
+  background: rgba(224,176,64,0.25) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.15);
+}
+.progressFill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.star { color: var(--accent); font-size: 10px; }
+.dot { opacity: 0.5; }
+
+/* WIDE CARD */
+.wideCard {
+  flex: 0 0 270px;
+  cursor: pointer;
+}
+.wideCard:hover .wideThumb { transform: scale(1.02); }
+.wideCard:hover .playOverlay { background: rgba(0,0,0,0.4); }
+.wideCard:hover .playBtn { opacity: 1; transform: scale(1); }
+
+.wideThumb {
+  width: 270px;
+  height: 155px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 8px;
+  transition: transform 0.2s ease;
+  position: relative;
+  background: var(--surface);
+}
+.wideImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.widePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface2);
+  font-size: 36px;
+}
+.playOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: background 0.15s;
+}
+.playBtn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.15s, transform 0.15s;
+}
+.playTriangle {
+  width: 0; height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 12px solid #08080f;
+  margin-left: 3px;
+}
+
+.wideTitle {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+.wideMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.progressLabel {
+  font-size: 10px;
+  color: var(--accent);
+  margin-left: 4px;
+}

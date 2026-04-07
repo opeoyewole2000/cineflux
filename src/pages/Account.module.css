@@ -1,0 +1,114 @@
+.wrap { padding: 1.5rem; }
+.inner { max-width: 680px; margin: 0 auto; }
+.heading { font-family: var(--font-display); font-size: 22px; font-weight: 700; margin-bottom: 1.5rem; }
+
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border: 0.5px solid var(--border);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.cardHeader { display: flex; align-items: baseline; gap: 8px; margin-bottom: 1rem; }
+.cardTitle { font-family: var(--font-display); font-size: 15px; font-weight: 600; margin-bottom: 1rem; }
+.cardSub { font-size: 12px; color: var(--text-muted); margin-bottom: 1rem; }
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 0.5px solid var(--border);
+  font-size: 14px;
+  gap: 12px;
+}
+.row:last-of-type { border-bottom: none; }
+
+.label { color: var(--text-muted); flex-shrink: 0; }
+
+.planBadge {
+  background: var(--accent-dim);
+  border: 0.5px solid var(--accent-border);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.traktHeader { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.25rem; }
+.traktLogo { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--trakt); }
+.traktSub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+.traktConnectBtn {
+  background: var(--trakt);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.traktConnectBtn:hover { opacity: 0.88; }
+
+.divider { height: 0.5px; background: var(--border); margin: 0.75rem 0; }
+
+.profileList { display: flex; flex-direction: column; gap: 8px; }
+
+.profileItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: var(--radius-sm);
+  border: 0.5px solid var(--border);
+}
+
+.profileLeft { display: flex; align-items: center; gap: 10px; }
+
+.profileAv {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.profileAv:hover { opacity: 0.8; }
+
+.profileName { font-size: 14px; font-weight: 500; }
+.profileRole { font-size: 11px; color: var(--text-muted); }
+.profileActions { display: flex; gap: 6px; }
+
+.activeBadge {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 0.5px solid var(--accent-border);
+}
+
+.backBtn {
+  font-size: 13px;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: color 0.15s;
+}
+.backBtn:hover { color: var(--text); }
