@@ -36,6 +36,9 @@ export function AppProvider({ children }) {
   const [traktSettings, setTraktSettings] = useState(() => load('cf_trakt_settings', {
     autoSync: true, syncRatings: true, syncWatchlist: false,
   }))
+  const [rdToken, setRdToken] = useState(() => load('cf_rd_token', null))
+  const [rdUser, setRdUser] = useState(() => load('cf_rd_user', null))
+  const [rdCredentials, setRdCredentials] = useState(() => load('cf_rd_credentials', null))
 
   useEffect(() => { save('cf_profiles', profiles) }, [profiles])
   useEffect(() => { save('cf_active_profile', activeProfile) }, [activeProfile])
@@ -45,6 +48,9 @@ export function AppProvider({ children }) {
   useEffect(() => { save('cf_trakt_token', traktToken) }, [traktToken])
   useEffect(() => { save('cf_trakt_user', traktUser) }, [traktUser])
   useEffect(() => { save('cf_trakt_settings', traktSettings) }, [traktSettings])
+  useEffect(() => { save('cf_rd_token', rdToken) }, [rdToken])
+  useEffect(() => { save('cf_rd_user', rdUser) }, [rdUser])
+  useEffect(() => { save('cf_rd_credentials', rdCredentials) }, [rdCredentials])
 
   const pid = activeProfile?.id
 
@@ -105,17 +111,17 @@ export function AppProvider({ children }) {
         getTraktWatchedHistory(token),
       ])
 
-      // Merge watchlist (Trakt ids.tmdb → local watchlist)
-      const traktWlIds = watchlist.map(i => i.movie?.ids?.tmdb).filter(Boolean)
+      // Merge watchlist — normalize IDs to numbers to match TMDB movie.id
+      const traktWlIds = watchlist.map(i => i.movie?.ids?.tmdb).filter(Boolean).map(Number)
       setWatchlists(prev => ({
         ...prev,
-        [id]: [...new Set([...(prev[id] || []), ...traktWlIds])],
+        [id]: [...new Set([...(prev[id] || []).map(Number), ...traktWlIds])],
       }))
 
       // Merge ratings (Trakt 1–10 → CineFlux 1–5)
       const newRatings = {}
       ratingsData.forEach(i => {
-        if (i.movie?.ids?.tmdb) newRatings[i.movie.ids.tmdb] = Math.round(i.rating / 2)
+        if (i.movie?.ids?.tmdb) newRatings[Number(i.movie.ids.tmdb)] = Math.round(i.rating / 2)
       })
       setRatings(prev => ({
         ...prev,
@@ -125,7 +131,7 @@ export function AppProvider({ children }) {
       // Merge watched history (any plays → 100% progress)
       const newProgress = {}
       watched.forEach(i => {
-        if (i.movie?.ids?.tmdb && i.plays > 0) newProgress[i.movie.ids.tmdb] = 100
+        if (i.movie?.ids?.tmdb && i.plays > 0) newProgress[Number(i.movie.ids.tmdb)] = 100
       })
       setProgress(prev => ({
         ...prev,
@@ -154,12 +160,25 @@ export function AppProvider({ children }) {
     setTraktUser(null)
   }
 
+  function connectRD(token, user, credentials) {
+    setRdToken(token)
+    setRdUser(user)
+    setRdCredentials(credentials)
+  }
+
+  function disconnectRD() {
+    setRdToken(null)
+    setRdUser(null)
+    setRdCredentials(null)
+  }
+
   return (
     <AppContext.Provider value={{
       profiles, activeProfile, selectProfile, addProfile, updateProfile, deleteProfile,
       myWatchlist, myRatings, myProgress,
       toggleWatchlist, rateMovie, updateProgress,
       traktToken, traktUser, traktSettings, setTraktSettings, connectTrakt, disconnectTrakt, syncTraktData,
+      rdToken, rdUser, rdCredentials, connectRD, disconnectRD,
       PROFILE_COLORS,
     }}>
       {children}

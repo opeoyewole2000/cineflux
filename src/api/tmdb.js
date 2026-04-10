@@ -41,6 +41,35 @@ export async function getMovieDetails(id) {
   return tmdb(`/movie/${id}`, { append_to_response: 'videos,credits' })
 }
 
+export async function getExternalIds(id) {
+  return tmdb(`/movie/${id}/external_ids`)
+  // { imdb_id: "tt1234567", ... }
+}
+
+// ── TV Shows ──────────────────────────────────────────────────────────────────
+
+export async function getTrendingTV() {
+  return tmdb('/trending/tv/week')
+}
+
+export async function getTopRatedTV() {
+  return tmdb('/tv/top_rated')
+}
+
+export async function getTVDetails(id) {
+  return tmdb(`/tv/${id}`, { append_to_response: 'videos,credits,external_ids' })
+  // includes .seasons[], .external_ids.imdb_id
+}
+
+export async function getTVSeason(id, seasonNumber) {
+  return tmdb(`/tv/${id}/season/${seasonNumber}`)
+  // { episodes: [{ episode_number, name, overview, still_path, air_date }] }
+}
+
+export async function getTVExternalIds(id) {
+  return tmdb(`/tv/${id}/external_ids`)
+}
+
 export async function searchMovies(query) {
   return tmdb('/search/movie', { query, include_adult: false })
 }

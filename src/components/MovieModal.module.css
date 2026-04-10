@@ -59,7 +59,7 @@
   right: 12px;
   width: 30px;
   height: 30px;
-  border-radius: 50%;
+  border-radius: 4px;
   background: rgba(8,8,15,0.7);
   border: 0.5px solid rgba(255,255,255,0.2);
   color: var(--text);

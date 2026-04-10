@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useApp } from '../context/AppContext'
 import { searchMovies } from '../api/tmdb'
 import MovieModal from './MovieModal'
+import TVModal from './TVModal'
 import styles from './Layout.module.css'
 
 export default function Layout() {
@@ -12,6 +13,7 @@ export default function Layout() {
   const [searchResults, setSearchResults] = useState([])
   const [searching, setSearching] = useState(false)
   const [selectedMovie, setSelectedMovie] = useState(null)
+  const [selectedShow, setSelectedShow] = useState(null)
 
   const initials = activeProfile?.name
     .split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || 'U'
@@ -87,11 +89,14 @@ export default function Layout() {
       </nav>
 
       <main className={styles.main}>
-        <Outlet context={{ setSelectedMovie }} />
+        <Outlet context={{ setSelectedMovie, setSelectedShow }} />
       </main>
 
       {selectedMovie && (
         <MovieModal movie={selectedMovie} onClose={() => setSelectedMovie(null)} />
+      )}
+      {selectedShow && (
+        <TVModal show={selectedShow} onClose={() => setSelectedShow(null)} />
       )}
     </div>
   )

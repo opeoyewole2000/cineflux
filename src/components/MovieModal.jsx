@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useApp } from '../context/AppContext'
 import { getMovieDetails, backdropUrl, posterUrl, getGenreNames } from '../api/tmdb'
+import Player from './Player'
 import styles from './MovieModal.module.css'
 
 export default function MovieModal({ movie, onClose }) {
-  const { myWatchlist, myRatings, myProgress, toggleWatchlist, rateMovie, updateProgress, traktToken } = useApp()
+  const { myWatchlist, myRatings, myProgress, toggleWatchlist, rateMovie, updateProgress, traktToken, rdToken } = useApp()
   const [details, setDetails] = useState(null)
   const [hoverStar, setHoverStar] = useState(0)
+  const [showPlayer, setShowPlayer] = useState(false)
 
   const inWL = myWatchlist.includes(movie.id)
   const userRating = myRatings[movie.id] || 0
@@ -31,8 +33,16 @@ export default function MovieModal({ movie, onClose }) {
   const trailer = details?.videos?.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube')
 
   function handleWatch() {
-    updateProgress(movie.id, Math.min(100, progress + 20))
-    onClose()
+    if (rdToken) {
+      setShowPlayer(true)
+    } else {
+      updateProgress(movie.id, Math.min(100, progress + 20))
+      onClose()
+    }
+  }
+
+  if (showPlayer) {
+    return <Player movie={m} onClose={() => setShowPlayer(false)} />
   }
 
   return (
@@ -83,7 +93,9 @@ export default function MovieModal({ movie, onClose }) {
           </div>
 
           <div className={styles.actions}>
-            <button className="btn-primary" onClick={handleWatch}>▶ Watch now</button>
+            <button className="btn-primary" onClick={handleWatch}>
+              {rdToken ? '▶ Stream now' : '▶ Watch now'}
+            </button>
             <button className="btn-secondary" onClick={() => toggleWatchlist(movie.id)}>
               {inWL ? '★ In watchlist' : '+ Watchlist'}
             </button>

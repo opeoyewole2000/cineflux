@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import MovieCard from '../components/MovieCard'
 import {
-  getTrending, getTopRated, getNowPlaying,
+  getTrending, getTopRated, getNowPlaying, getTrendingTV,
   backdropUrl, posterUrl, getGenreNames,
   GENRE_IDS
 } from '../api/tmdb'
@@ -12,26 +12,49 @@ import styles from './Home.module.css'
 const GENRES = ['All', 'Action', 'Sci-Fi', 'Drama', 'Thriller', 'Comedy', 'Horror']
 
 export default function Home() {
-  const { setSelectedMovie } = useOutletContext()
+  const { setSelectedMovie, setSelectedShow } = useOutletContext()
   const { myProgress, myRatings } = useApp()
 
   const [trending, setTrending] = useState([])
   const [topRated, setTopRated] = useState([])
   const [newReleases, setNewReleases] = useState([])
-  const [hero, setHero] = useState(null)
+  const [trendingTV, setTrendingTV] = useState([])
+  const [heroSlides, setHeroSlides] = useState([])
+  const [heroIndex, setHeroIndex] = useState(0)
   const [genre, setGenre] = useState('All')
   const [loading, setLoading] = useState(true)
+  const autoplayRef = useRef(null)
+
+  const hero = heroSlides[heroIndex] || null
+
+  const goTo = useCallback((i) => {
+    setHeroIndex(i)
+    clearInterval(autoplayRef.current)
+    autoplayRef.current = setInterval(() => {
+      setHeroIndex(prev => (prev + 1) % heroSlides.length)
+    }, 7000)
+  }, [heroSlides.length])
 
   useEffect(() => {
-    Promise.all([getTrending(), getTopRated(), getNowPlaying()])
-      .then(([trend, top, now]) => {
+    if (!heroSlides.length) return
+    autoplayRef.current = setInterval(() => {
+      setHeroIndex(prev => (prev + 1) % heroSlides.length)
+    }, 7000)
+    return () => clearInterval(autoplayRef.current)
+  }, [heroSlides.length])
+
+  useEffect(() => {
+    Promise.all([getTrending(), getTopRated(), getNowPlaying(), getTrendingTV()])
+      .then(([trend, top, now, tv]) => {
         const t = trend.results || []
         const r = top.results || []
         const n = now.results || []
+        const s = tv.results || []
         setTrending(t)
         setTopRated(r)
         setNewReleases(n)
-        setHero(t[0] || null)
+        setTrendingTV(s)
+        setHeroSlides(t.filter(m => m.backdrop_path).slice(0, 6))
       })
       .catch(() => {})
       .finally(() => setLoading(false))
@@ -63,28 +86,47 @@ export default function Home() {
 
   return (
     <div className={styles.wrap}>
-      {hero && (
-        <div className={styles.hero} style={hero.backdrop_path ? { backgroundImage: `url(${backdropUrl(hero.backdrop_path)})` } : {}}>
-          <div className={styles.heroOverlay} />
-          <div className={styles.heroContent}>
-            <div className="badge badge-accent">★ Featured</div>
-            <h1 className={styles.heroTitle}>{hero.title}</h1>
-            <div className={styles.heroMeta}>
-              <span>{hero.release_date?.slice(0, 4)}</span>
-              <span className={styles.heroDot}>·</span>
-              <span>{getGenreNames(hero.genre_ids)}</span>
-              {hero.vote_average > 0 && <>
-                <span className={styles.heroDot}>·</span>
-                <span className={styles.heroRating}>★ {hero.vote_average?.toFixed(1)}</span>
-              </>}
+      {heroSlides.length > 0 && (
+        <div className={styles.heroWrap}>
+          {heroSlides.map((slide, i) => (
+            <div
+              key={slide.id}
+              className={`${styles.hero} ${i === heroIndex ? styles.heroActive : ''}`}
+              style={{ backgroundImage: `url(${backdropUrl(slide.backdrop_path)})` }}
+            >
+              <div className={styles.heroOverlay} />
+              <div className={styles.heroContent}>
+                <div className="badge badge-accent">★ Trending</div>
+                <h1 className={styles.heroTitle}>{slide.title}</h1>
+                <div className={styles.heroMeta}>
+                  <span>{slide.release_date?.slice(0, 4)}</span>
+                  <span className={styles.heroDot}>·</span>
+                  <span>{getGenreNames(slide.genre_ids)}</span>
+                  {slide.vote_average > 0 && <>
+                    <span className={styles.heroDot}>·</span>
+                    <span className={styles.heroRating}>★ {slide.vote_average?.toFixed(1)}</span>
+                  </>}
+                </div>
+                {slide.overview && (
+                  <p className={styles.heroDesc}>{slide.overview.slice(0, 160)}…</p>
+                )}
+                <div className={styles.heroActions}>
+                  <button className="btn-primary" onClick={() => setSelectedMovie(slide)}>▶ Watch now</button>
+                  <button className="btn-secondary" onClick={() => setSelectedMovie(slide)}>+ Watchlist</button>
+                </div>
+              </div>
             </div>
-            {hero.overview && (
-              <p className={styles.heroDesc}>{hero.overview.slice(0, 160)}…</p>
-            )}
-            <div className={styles.heroActions}>
-              <button className="btn-primary" onClick={() => setSelectedMovie(hero)}>▶ Watch now</button>
-              <button className="btn-secondary" onClick={() => setSelectedMovie(hero)}>+ Watchlist</button>
-            </div>
+          ))}
+
+          {/* Prev / Next arrows */}
+          <button className={`${styles.heroArrow} ${styles.heroArrowLeft}`} onClick={() => goTo((heroIndex - 1 + heroSlides.length) % heroSlides.length)}>‹</button>
+          <button className={`${styles.heroArrow} ${styles.heroArrowRight}`} onClick={() => goTo((heroIndex + 1) % heroSlides.length)}>›</button>
+
+          {/* Dot indicators */}
+          <div className={styles.heroDots}>
+            {heroSlides.map((_, i) => (
+              <button key={i} className={`${styles.heroDot2} ${i === heroIndex ? styles.heroDotActive : ''}`} onClick={() => goTo(i)} />
+            ))}
           </div>
         </div>
       )}
@@ -148,6 +190,24 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {trendingTV.length > 0 && (
+        <section className="section">
+          <div className="section-header">
+            <h2 className="section-title">Trending TV shows</h2>
+            <span className="see-all">See all</span>
+          </div>
+          <div className="movie-row">
+            {trendingTV.slice(0, 14).map(s => (
+              <MovieCard
+                key={s.id}
+                movie={{ ...s, title: s.name || s.title }}
+                onClick={() => setSelectedShow(s)}
+              />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }

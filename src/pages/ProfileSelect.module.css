@@ -171,7 +171,7 @@
 .colorDot {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: 4px;
   cursor: pointer;
   border: 2px solid transparent;
   transition: transform 0.12s, border-color 0.12s;

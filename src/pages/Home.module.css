@@ -4,15 +4,29 @@
 .rowSkeleton { border-radius: 6px; }
 .loadingWrap { padding-bottom: 2rem; }
 
-.hero {
-  height: 440px;
+.heroWrap {
   position: relative;
+  height: 500px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.hero {
+  position: absolute;
+  inset: 0;
   background: var(--surface2);
   background-size: cover;
   background-position: center 20%;
-  margin-bottom: 2rem;
   display: flex;
   align-items: flex-end;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+
+.heroActive {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .heroOverlay {
@@ -20,24 +34,24 @@
   inset: 0;
   background:
     linear-gradient(to right, rgba(8,8,15,0.95) 30%, transparent 65%, rgba(8,8,15,0.5) 100%),
-    linear-gradient(to top, rgba(8,8,15,0.98) 0%, rgba(8,8,15,0.3) 40%, transparent 70%);
+    linear-gradient(to top, rgba(8,8,15,1) 0%, rgba(8,8,15,0.4) 40%, transparent 70%);
 }
 
 .heroContent {
   position: relative;
   z-index: 1;
-  padding: 2rem 1.5rem;
-  max-width: 520px;
+  padding: 2.5rem 1.5rem;
+  max-width: 540px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .heroTitle {
   font-family: var(--font-display);
-  font-size: 38px;
+  font-size: 42px;
   font-weight: 700;
-  line-height: 1.08;
+  line-height: 1.05;
 }
 
 .heroMeta {
@@ -59,6 +73,57 @@
 }
 
 .heroActions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+
+/* Arrows */
+.heroArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  background: rgba(8,8,15,0.6);
+  border: 0.5px solid rgba(255,255,255,0.12);
+  color: var(--text);
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s;
+  line-height: 1;
+}
+.heroArrow:hover { background: rgba(8,8,15,0.9); }
+.heroArrowLeft { left: 1rem; }
+.heroArrowRight { right: 1rem; }
+
+/* Dots */
+.heroDots {
+  position: absolute;
+  bottom: 1.25rem;
+  right: 1.5rem;
+  z-index: 10;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.heroDot2 {
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.25);
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  transition: background 0.2s, width 0.2s;
+}
+
+.heroDotActive {
+  width: 40px;
+  background: var(--accent);
+}
 
 .genreRow {
   display: flex;

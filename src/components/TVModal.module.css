@@ -1,0 +1,127 @@
+.seasonTabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.seasonTab {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.seasonTab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+}
+
+.seasonTabActive {
+  background: rgba(224, 176, 64, 0.15);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.episodeList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.episode {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.episode:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.episodeThumb {
+  width: 100px;
+  height: 56px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--surface2);
+}
+
+.episodeImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.episodePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 18px;
+}
+
+.episodeInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.episodeTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.episodeNum {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-right: 6px;
+  min-width: 24px;
+}
+
+.episodeOverview {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.playBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  background: rgba(224, 176, 64, 0.15);
+  border: 1px solid rgba(224, 176, 64, 0.3);
+  color: var(--accent);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.playBtn:hover {
+  background: rgba(224, 176, 64, 0.3);
+}
